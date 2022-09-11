@@ -1,8 +1,9 @@
 package br.com.phricardo.idJava.controller;
 
 import br.com.phricardo.idJava.dto.UserRegisterRequestDto;
-import br.com.phricardo.idJava.dto.UserRegisterResponseDto;
+import br.com.phricardo.idJava.dto.ErrorResponseDto;
 import br.com.phricardo.idJava.model.UserModel;
+import br.com.phricardo.idJava.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
@@ -22,20 +23,23 @@ import java.util.UUID;
 public class RegisterController {
 
     private final PasswordEncoder encoder;
+    private final UserRepository userRepository;
 
     @PostMapping()
-    public ResponseEntity<UserRegisterResponseDto> register(@Valid @RequestBody @NotNull UserRegisterRequestDto userRegisterRequestDto){
-      UserModel userModel = UserModel.builder()
-              .id(UUID.randomUUID())
-              .username(userRegisterRequestDto.getUsername())
-              .fullName(userRegisterRequestDto.getFullName())
-              .cpfCnpj(userRegisterRequestDto.getCpfCnpj())
-              .email(userRegisterRequestDto.getEmail())
-              .password(encoder.encode(userRegisterRequestDto.getPassword()))
-              .active(true)
-              .build();
+    public ResponseEntity<ErrorResponseDto> register(@Valid @RequestBody @NotNull UserRegisterRequestDto userRegisterRequestDto) {
+        UserModel userModel = UserModel.builder()
+                .userId(UUID.randomUUID())
+                .username(userRegisterRequestDto.getUsername())
+                .fullName(userRegisterRequestDto.getFullName())
+                .cpfCnpj(userRegisterRequestDto.getCpfCnpj())
+                .email(userRegisterRequestDto.getEmail())
+                .password(encoder.encode(userRegisterRequestDto.getPassword()))
+                .active(true)
+                .build();
 
-        return new ResponseEntity<>(new UserRegisterResponseDto("Usuário criado com sucesso!"), HttpStatus.CREATED);
+        userRepository.save(userModel);
+
+        return new ResponseEntity<>(new ErrorResponseDto("User created successfully"), HttpStatus.CREATED);
     }
 
 }
