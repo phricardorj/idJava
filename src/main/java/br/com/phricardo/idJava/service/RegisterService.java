@@ -44,7 +44,7 @@ public class RegisterService {
     }
 
     public Boolean isValidUserRequest(UserRegisterRequestDto userRegisterRequestDto){
-        Boolean username = patternMatcherUtil.matcher("^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$",
+        Boolean username = patternMatcherUtil.matcher("^[\\w](?!.*?\\.{2})[\\w.]{1,28}[\\w]$",
                 userRegisterRequestDto.getUsername());
         Boolean fullName = patternMatcherUtil.matcher("^(?:[\\p{L}\\p{Mn}\\p{Pd}\\'\\x{2019}]+(?:$|\\s+)){2,}$",
                 userRegisterRequestDto.getFullName());
