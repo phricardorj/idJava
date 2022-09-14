@@ -22,7 +22,7 @@ public class LoginController {
    private final LoginService loginService;
 
     @PostMapping()
-    public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequestDto userLoginRequestDto) throws Exception {
+    public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequestDto userLoginRequestDto) {
         return loginService.isValid(userLoginRequestDto);
     }
 

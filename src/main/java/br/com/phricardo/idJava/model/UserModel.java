@@ -11,16 +11,22 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-@Entity(name = "userData")
+@Entity(name = "userRegister")
 public class UserModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private UUID userId;
+    @Column(nullable = false, unique = true)
     private String username;
+    @Column(nullable = false)
     private String fullName;
+    @Column(nullable = false, unique = true)
     private String cpfCnpj;
+    @Column(nullable = false, unique = true)
     private String email;
+    @Column(nullable = false)
     private String password;
+    @Column(nullable = false)
     private Boolean active;
 }
