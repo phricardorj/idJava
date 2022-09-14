@@ -1,5 +1,7 @@
 package br.com.phricardo.idJava.dto;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 

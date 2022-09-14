@@ -1,7 +1,7 @@
 package br.com.phricardo.idJava.dto;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +16,7 @@ public class UserRegisterRequestDto  {
     private String fullName;
     @NotBlank @Pattern(message = MESSAGE_PATTERN_ERROR, regexp = "^(\\d{2}\\.?\\d{3}\\.?\\d{3}\\/?\\d{4}-?\\d{2}|\\d{3}\\.?\\d{3}\\.?\\d{3}-?\\d{2})$")
     private String cpfCnpj;
-    @NotBlank @Pattern(message = MESSAGE_PATTERN_ERROR, regexp = "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")
+    @NotBlank @Email(message = MESSAGE_PATTERN_ERROR)
     private String email;
     @NotBlank @Pattern(message = MESSAGE_PATTERN_ERROR, regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
     private String password;

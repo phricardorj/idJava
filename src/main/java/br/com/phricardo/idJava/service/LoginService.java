@@ -1,5 +1,6 @@
 package br.com.phricardo.idJava.service;
 
+import br.com.phricardo.idJava.dto.ErrorResponseDto;
 import br.com.phricardo.idJava.dto.UserLoginRequestDto;
 import br.com.phricardo.idJava.model.UserModel;
 import br.com.phricardo.idJava.repository.UserRepository;
@@ -25,12 +26,13 @@ public class LoginService {
         if(!email.isEmpty() || !username.isEmpty()){
             Optional<UserModel> user = userRepository.findByEmail(email).isPresent() ? userRepository.findByEmail(email) : userRepository.findByUsername(username);
             UserModel userModel = user.orElse(null);
-            if(userModel != null) return new ResponseEntity<>(encoder.matches(password, userModel.getPassword()), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Username or Email needs to be informed", HttpStatus.BAD_REQUEST);
+            if(userModel != null){
+                return new ResponseEntity<>(encoder.matches(password, userModel.getPassword()), HttpStatus.OK);
+            }
+
         }
 
-        return new ResponseEntity<>("Username or Email not found in the system", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ErrorResponseDto.builder().numErros(1).errors("Email or Username is required").build(), HttpStatus.BAD_REQUEST);
     }
 
 }

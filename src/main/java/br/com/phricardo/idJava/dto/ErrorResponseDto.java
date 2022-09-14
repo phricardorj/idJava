@@ -11,5 +11,5 @@ import org.springframework.validation.Errors;
 @Builder(toBuilder = true)
 public class ErrorResponseDto {
     private Integer numErros;
-    private List<String> errors;
+    private String errors;
 }

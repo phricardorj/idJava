@@ -3,7 +3,6 @@ package br.com.phricardo.idJava.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.UUID;
 
 @Getter
