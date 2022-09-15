@@ -1,20 +1,26 @@
 package br.com.phricardo.idJava.model;
 
+import java.io.Serializable;
+import java.util.Collection;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.UUID;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-@Entity(name = "userRegister")
-public class UserModel {
+@Entity
+@Table(name = "TB_USER")
+public class UserModel implements UserDetails, Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID userId;
     @Column(nullable = false, unique = true)
     private String username;
@@ -28,4 +34,29 @@ public class UserModel {
     private String password;
     @Column(nullable = false)
     private Boolean active;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

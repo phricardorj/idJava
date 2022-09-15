@@ -20,7 +20,6 @@ public class RegisterService {
     public ResponseEntity<?> register(UserRegisterRequestDto userRegisterRequestDto) {
             UserModel userModel = userRepository.save(
                     UserModel.builder()
-                            .userId(UUID.randomUUID())
                             .username(userRegisterRequestDto.getUsername())
                             .fullName(userRegisterRequestDto.getFullName())
                             .cpfCnpj(userRegisterRequestDto.getCpfCnpj())

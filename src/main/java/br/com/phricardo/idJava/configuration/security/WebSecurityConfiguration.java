@@ -11,6 +11,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    private final UserDetailServiceImpl userDetailService;
+
+    public WebSecurityConfiguration(UserDetailServiceImpl userDetailService) {
+        this.userDetailService = userDetailService;
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -29,9 +35,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-            .withUser("pedroricardo")
-            .password(passwordEncoder().encode("123456"))
-            .roles("ADMIN");
+        auth.userDetailsService(userDetailService)
+            .passwordEncoder(passwordEncoder());
     }
 }
