@@ -13,3 +13,4 @@
 -   [PostgreSQL](https://www.postgresql.org/)
 -   [Maven](https://maven.apache.org/)
 -   [Lombok](https://projectlombok.org/)
+-   [Auth0](https://auth0.com/)
