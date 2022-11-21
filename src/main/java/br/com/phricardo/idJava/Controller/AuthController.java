@@ -37,14 +37,17 @@ public class AuthController {
     @PostMapping("/auth/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginAuthRequestDto request) {
         try {
-            Authentication authentication = authManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getEmail(), request.getPassword())
-            );
+            UsernamePasswordAuthenticationToken loginData = new UsernamePasswordAuthenticationToken(
+                    request.getUsername(), request.getPassword());
 
+            Authentication authentication = authManager.authenticate(loginData);
             User user = (User) authentication.getPrincipal();
-            String accessToken = jwtUtil.generateAccessToken(user);
-            AuthResponse response = new AuthResponse(user.getEmail(), accessToken);
+
+            AuthResponse response = AuthResponse.builder()
+                    .email(user.getEmail())
+                    .username(user.getUsername())
+                    .accessToken(jwtUtil.generateAccessToken(user))
+                    .build();
 
             return ResponseEntity.ok().body(response);
 
@@ -55,12 +58,13 @@ public class AuthController {
 
     @PostMapping("/auth/register")
     public User userRegister(@RequestBody RegisterAuthRequestDto registerAuthRequestDto) {
-        User newUser = new User(
-                registerAuthRequestDto.getName(),
-                registerAuthRequestDto.getUsername(),
-                registerAuthRequestDto.getEmail(),
-                encoder.encode(registerAuthRequestDto.getPassword())
-        );
+        User newUser = User.builder()
+                .name(registerAuthRequestDto.getName())
+                .username(registerAuthRequestDto.getUsername())
+                .email(registerAuthRequestDto.getEmail())
+                .password(encoder.encode(registerAuthRequestDto.getPassword()))
+                .build();
+
         userRepository.save(newUser);
         return newUser;
     }

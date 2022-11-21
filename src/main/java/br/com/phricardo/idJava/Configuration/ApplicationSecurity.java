@@ -1,5 +1,6 @@
 package br.com.phricardo.idJava.Configuration;
 
+import br.com.phricardo.idJava.Model.User;
 import br.com.phricardo.idJava.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
 
 @EnableWebSecurity
 public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
@@ -28,9 +30,15 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(
-                username -> userRepo.findByEmail(username)
+                username -> getUserData(username)
                         .orElseThrow(
                                 () -> new UsernameNotFoundException("User " + username + " not found.")));
+    }
+
+    private Optional<User> getUserData(String username) {
+        Optional<User> user = userRepo.findByEmail(username);
+        if (user.isEmpty()) user = userRepo.findByUsername(username);
+        return user;
     }
 
     @Bean

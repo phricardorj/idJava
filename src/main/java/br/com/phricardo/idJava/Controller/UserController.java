@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
+@RequestMapping(value = "/v1")
 public class UserController {
     private final JwtTokenUtil jwtUtil;
     private final UserRepository userRepository;
