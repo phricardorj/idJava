@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
@@ -74,7 +75,8 @@ public class AuthController {
     }
 
     @PostMapping("/auth/validate-token")
-    public Boolean validateAccessToken(@RequestBody TokenRequestDto tokenRequestDTO) {
-        return jwtUtil.validateAccessToken(tokenRequestDTO.getAccessToken());
+    public Boolean validateAccessToken(HttpServletRequest request) {
+        String token = jwtUtil.getHeaderToken(request);
+        return jwtUtil.validateAccessToken(token);
     }
 }
