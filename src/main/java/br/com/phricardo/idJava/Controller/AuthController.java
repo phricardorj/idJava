@@ -1,11 +1,9 @@
 package br.com.phricardo.idJava.Controller;
 
-import br.com.phricardo.idJava.Dto.LoginAuthRequestDto;
-import br.com.phricardo.idJava.Dto.AuthResponse;
-import br.com.phricardo.idJava.Dto.RegisterAuthRequestDto;
-import br.com.phricardo.idJava.Dto.TokenRequestDto;
+import br.com.phricardo.idJava.Dto.*;
 import br.com.phricardo.idJava.Model.User;
 import br.com.phricardo.idJava.Repository.UserRepository;
+import br.com.phricardo.idJava.Service.UserService;
 import br.com.phricardo.idJava.Util.JwtTokenUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,11 +25,14 @@ public class AuthController {
     private final PasswordEncoder encoder;
     private final UserRepository userRepository;
 
-    public AuthController(JwtTokenUtil jwtUtil, PasswordEncoder encoder, UserRepository userRepository, AuthenticationManager authManager) {
+    private final UserService userService;
+
+    public AuthController(JwtTokenUtil jwtUtil, PasswordEncoder encoder, UserRepository userRepository, AuthenticationManager authManager, UserService userService) {
         this.jwtUtil = jwtUtil;
         this.encoder = encoder;
         this.userRepository = userRepository;
         this.authManager = authManager;
+        this.userService = userService;
     }
 
     @PostMapping("/auth/login")
@@ -57,21 +58,23 @@ public class AuthController {
     }
 
     @PostMapping("/auth/register")
-    public User userRegister(@RequestBody RegisterAuthRequestDto registerAuthRequestDto) {
-        User newUser = User.builder()
-                .name(registerAuthRequestDto.getName())
-                .username(registerAuthRequestDto.getUsername())
-                .email(registerAuthRequestDto.getEmail())
-                .password(encoder.encode(registerAuthRequestDto.getPassword()))
-                .build();
+    public ResponseEntity<?> userRegister(@RequestBody RegisterAuthRequestDto registerAuthRequestDto) {
+        ErrorResponseDto errorResponseDto = userService.validateRegister(registerAuthRequestDto);
+        if(errorResponseDto.isOk()) {
+            User newUser = User.builder()
+                    .name(registerAuthRequestDto.getName())
+                    .username(registerAuthRequestDto.getUsername())
+                    .email(registerAuthRequestDto.getEmail())
+                    .password(encoder.encode(registerAuthRequestDto.getPassword()))
+                    .build();
 
-        userRepository.save(newUser);
-        return newUser;
+            return new ResponseEntity<>(userRepository.save(newUser), HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(errorResponseDto, HttpStatus.CONFLICT);
     }
 
     @PostMapping("/auth/validate-token")
     public Boolean validateAccessToken(@RequestBody TokenRequestDto tokenRequestDTO) {
         return jwtUtil.validateAccessToken(tokenRequestDTO.getAccessToken());
     }
-
 }

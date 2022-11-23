@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 public class JwtTokenUtil {
@@ -62,5 +63,10 @@ public class JwtTokenUtil {
     public String getHeaderToken(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
         return header.split(" ")[1].trim();
+    }
+
+    public UUID getUserIdByToken(String token) {
+        String[] subject = getSubject(token).split(",");;
+        return UUID.fromString(subject[0]);
     }
 }
