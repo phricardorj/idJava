@@ -4,9 +4,11 @@ import br.com.phricardo.idJava.Dto.ErrorResponseDto;
 import br.com.phricardo.idJava.Dto.RegisterAuthRequestDto;
 import br.com.phricardo.idJava.Model.User;
 import br.com.phricardo.idJava.Repository.UserRepository;
+import br.com.phricardo.idJava.Util.JwtTokenUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -15,8 +17,11 @@ import java.util.UUID;
 public class UserService {
     private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    private final JwtTokenUtil jwtUtil;
+
+    public UserService(UserRepository userRepository, JwtTokenUtil jwtUtil) {
         this.userRepository = userRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     public User updateUserData(User user, RegisterAuthRequestDto userRequestDto) {
@@ -28,6 +33,11 @@ public class UserService {
 
     public User getUserById(UUID uuid) {
         return userRepository.findById(uuid).orElse(new User());
+    }
+
+    public UUID getUserIdByHeader(HttpServletRequest request) {
+        String token = jwtUtil.getHeaderToken(request);
+        return jwtUtil.getUserIdByToken(token);
     }
 
     public ErrorResponseDto validateCredentials(RegisterAuthRequestDto userRequest, User userLogado) {

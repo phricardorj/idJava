@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/api/v1/user")
@@ -24,16 +23,12 @@ public class UserController {
 
     @GetMapping
     public User getUser(HttpServletRequest request) {
-        String token = jwtUtil.getHeaderToken(request);
-        UUID userId = jwtUtil.getUserIdByToken(token);
-        return userService.getUserById(userId);
+        return userService.getUserById(userService.getUserIdByHeader(request));
     }
 
     @PutMapping
     public ResponseEntity<?> updateUser(HttpServletRequest request, @RequestBody RegisterAuthRequestDto userRequestDto) {
-        String token = jwtUtil.getHeaderToken(request);
-        UUID userId = jwtUtil.getUserIdByToken(token);
-        User user = userService.getUserById(userId);
+        User user = userService.getUserById(userService.getUserIdByHeader(request));
         ErrorResponseDto errorResponseDto = userService.validateCredentials(userRequestDto, user);
         if(errorResponseDto.isOk()) {
             return new ResponseEntity<>(userService.updateUserData(user, userRequestDto), HttpStatus.CREATED);
